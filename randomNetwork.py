@@ -89,9 +89,6 @@ def build_rate_term(e):
 
     if law == "EQ":
         return f"{Vf}*(1 + {K1}*{A_n}*{B_n})/(1 + {K1}*{A_n} + {K2}*{B_n} + {K3}*{A_n}*{B_n})"
-
-    raise ValueError(f"Unhandled rate law: {law}")
-
 def network_to_antimony(network):
 
     genes = network["genes"]
