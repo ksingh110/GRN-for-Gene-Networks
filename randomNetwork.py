@@ -10,8 +10,8 @@ rate_laws = single_input_laws + two_input_laws
 
 def generate_random_network():
 
-    number_genes = random.randint(0,19)
-    number_connections = random.randint(0,15)
+    number_genes = random.randint(2,19)
+    number_connections = random.randint(1,15)
     genes = [f"Gene{i}" for i in range(number_genes)]
     edges = []
 
@@ -120,7 +120,7 @@ def simulate_network(network):
     antimony_str = network_to_antimony(network)
     print(antimony_str)
     r = te.loada(antimony_str)
-    result = r.simulate(0, 50, 300)
+    result = r.simulate(0, 10, 10)
     r.plot(result, xlabel="Time", ylabel="Expression")
     return r, result
 
