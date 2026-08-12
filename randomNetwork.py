@@ -2,15 +2,15 @@ import random
 from collections import defaultdict
 import tellurium as te
 
-#simple, no logic gates
-single_input_laws = ["activation", "inhibition"]
-#logic gates
-two_input_laws = ["AND", "OR", "NOR", "NAND", "XOR", "EQ"]
-rate_laws = single_input_laws + two_input_laws
 
 def generate_random_network():
+    #simple, no logic gates
+    single_input_laws = ["activation", "inhibition"]
+    #logic gates
+    two_input_laws = ["AND", "OR", "NOR", "NAND", "XOR", "EQ"]
+    rate_laws = single_input_laws + two_input_laws
 
-    number_genes = random.randint(2,19)
+    number_genes = random.randint(3,19)
     number_connections = random.randint(1,15)
     genes = [f"Gene{i}" for i in range(number_genes)]
     edges = []
@@ -116,23 +116,7 @@ def network_to_antimony(network):
     return "\n".join(lines)
 
 def simulate_network(network):
-    print("Network:")
     antimony_str = network_to_antimony(network)
-    print(antimony_str)
     r = te.loada(antimony_str)
     result = r.simulate(0, 10, 10)
-    r.plot(result, xlabel="Time", ylabel="Expression")
-    return r, result
-
-if __name__ == "__main__":
-    net = generate_random_network()
-
-    print(f"random genes {net['genes']}")
-
-    print(f"edges ({len(net['edges'])}):")
-    for e in net["edges"]:
-            print(f" {e['target']},({e['regulator']}, {e['regulator2']})-{e['rate_law']}")
-
-    net = prune_unconnected_genes(net)
-    print(f"after removing disconnected genes: {net['genes']}")
-    r, result = simulate_network(net)
+    return result
