@@ -5,6 +5,10 @@ from randomNetwork import generate_random_network, prune_unconnected_genes, simu
 from mutateGeneration import apply_mutation
 
 TARGET_PATTERN = [5.0, 30.0, 5.0, 30.0, 5.0, 30.0, 5.0, 30.0, 5.0, 30.0]
+TARGET_AMPLITUDE = max(TARGET_PATTERN) - min(TARGET_PATTERN)  # 25.0
+AMPLITUDE_PENALTY_WEIGHT = 1.0
+
+
 def compute_oscillator_fitness(result, target_pattern=TARGET_PATTERN):
     n_points = len(result)
     per_gene_scores = {}
@@ -12,11 +16,10 @@ def compute_oscillator_fitness(result, target_pattern=TARGET_PATTERN):
     for i, col in enumerate(result.colnames):
         if col == "time":
             continue
-        sse = 0.0
-        for t_idx in range(n_points):
-            value = result[t_idx][i]
-            target = target_pattern[t_idx]
-            sse += (value - target) ** 2
+
+        trace = [result[t_idx][i] for t_idx in range(n_points)]
+
+        sse = sum((v - t) ** 2 for v, t in zip(trace, target_pattern))
         per_gene_scores[col] = float(sse)
 
     best_gene = min(per_gene_scores, key=per_gene_scores.get)
@@ -46,9 +49,7 @@ def compute_generation_initial(genNumber):
     N_NETWORKS = 100
     OUT_PATH = "generations/generation_" + str(genNumber) + ".json"
     networks_out = []
-    print("Generation:" + str(genNumber))
     for i in range(N_NETWORKS):
-        print("     Network:" + str(i))
         net = generate_random_network()
         net = prune_unconnected_genes(net)
 
@@ -63,11 +64,6 @@ def compute_generation_initial(genNumber):
 
     with open(OUT_PATH, "w") as f:
         json.dump(output, f, indent=2)
-
-    scored = [n["fitness"]["score"] for n in networks_out if n["fitness"]["score"] is not None]
-    best_overall = min(scored) if scored else None
-    print(f"Saved {N_NETWORKS} networks to {OUT_PATH} "
-          f"(best score: {best_overall}, {N_NETWORKS - len(scored)} failed to simulate)")
 
 
 def compute_elite_initial(networks, elite_count):
@@ -90,7 +86,7 @@ def generate_children_from_rejected(pool, n_children, start_id):
     return children
 
 
-def generationCreate(elite_percent, i, immigrant_count=10):
+def generationCreate(elite_percent, i, immigrant_count=20):
     with open("generations/generation_"+str(i)+".json", "r") as file:
         network = json.load(file)
     elites = compute_elite_initial(network["networks"], elite_percent)
@@ -99,10 +95,13 @@ def generationCreate(elite_percent, i, immigrant_count=10):
         clone = copy.deepcopy(entry)
         clone["id"] = idx
         elite_clones.append(clone)
-    n_bred = 100 - elite_percent - immigrant_count
+    #n_bred = 100 - elite_percent - immigrant_count
+    n_bred = 100 - elite_percent
+
     children = generate_children_from_rejected(
         network["networks"], n_bred, start_id=elite_percent
     )
+
 
     immigrants = []
     for j in range(immigrant_count):
@@ -110,7 +109,9 @@ def generationCreate(elite_percent, i, immigrant_count=10):
         net = prune_unconnected_genes(net)
         immigrants.append(score_entry(net, elite_percent + n_bred + j))
 
-    next_gen = elite_clones + children + immigrants
+    #next_gen = elite_clones + children + immigrants
+    next_gen = elite_clones + children
+
     next_gen = sorted(
         next_gen,
         key=lambda x: x["fitness"]["score"] if x["fitness"]["score"] is not None else float("inf"),
@@ -123,12 +124,13 @@ def generationCreate(elite_percent, i, immigrant_count=10):
 
 
 if __name__ == "__main__":
+    random.seed(1234)
     compute_generation_initial(1)
     with open("generations/generation_1.json") as f:
         best_fitness = json.load(f)["networks"][0]["fitness"]["score"]
     iteration = 1
     while(best_fitness>100):
-        generationCreate(20,iteration)
+        generationCreate(10,iteration)
         with open(f"generations/generation_{iteration+1}.json") as f:
           data = json.load(f)
         new_best = data["networks"][0]["fitness"]["score"]

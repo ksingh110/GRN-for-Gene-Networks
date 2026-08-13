@@ -49,7 +49,7 @@ def mutate_parameters(edge):
 
     param = random.choice(numeric_params)
     for param in numeric_params:
-            if random.random() < 0.15:
+            if random.random() < 0.2:
                 if param.startswith("n"):
                     edge[param] = round(random.uniform(0, 8.0), 2)
                 else:
