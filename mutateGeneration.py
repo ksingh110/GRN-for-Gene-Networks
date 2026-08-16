@@ -6,9 +6,8 @@ TWO_INPUT_LAWS = ["AND", "OR", "NOR", "NAND", "XOR", "EQ"]
 
 MOVE_DAMAGE = {
     "randomize_param": 2,
-    "mutate_degradation": 2,
-    "mutate_y0": 2,
-    "change_law": 10,
+    "mutate_degradation": 4,
+    "change_law": 5,
     "remove_edge": 8,
     "add_edge": 6,
 }
@@ -92,11 +91,6 @@ def mutate_degradation(degradation_rates, genes):
     degradation_rates[gene] = round(random.uniform(0.05, 1.0), 2)
 
 
-def mutate_y0(y0, genes):
-    gene = random.choice(genes)
-    y0[gene] = round(random.uniform(0, 30), 2)
-
-
 def apply_mutation(network):
     net = copy.deepcopy(network)
     genes = net["genes"]
@@ -104,7 +98,7 @@ def apply_mutation(network):
     degradation_rates = net["degradation_rates"]
     y0 = net["y0"]
 
-    possible_mutations = ["add_edge", "mutate_degradation", "mutate_y0"]
+    possible_mutations = ["add_edge", "mutate_degradation"]
     if edges:
         possible_mutations += ["remove_edge", "randomize_param", "change_law"]
     weights = [(1.0 / MOVE_DAMAGE[m]) for m in possible_mutations]
@@ -112,9 +106,6 @@ def apply_mutation(network):
 
     if mutation == "mutate_degradation":
         mutate_degradation(degradation_rates, genes)
-
-    elif mutation == "mutate_y0":
-        mutate_y0(y0, genes)
 
     elif mutation == "randomize_param":
         mutate_parameters(edges)

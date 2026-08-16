@@ -1,12 +1,16 @@
 import json
+import time
 import copy
 import random
+import os
+import multiprocessing as mp
 from randomNetwork import generate_random_network, prune_unconnected_genes
 from fastsimulate import simulate_network
 from mutateGeneration import apply_mutation
 from test import visualize_network
 
 TARGET_PATTERN = [5.0, 30.0, 5.0, 30.0, 5.0, 30.0, 5.0, 30.0, 5.0, 30.0]
+
 
 def compute_oscillator_fitness(result, target_pattern=TARGET_PATTERN):
     n_points = len(result)
@@ -31,9 +35,9 @@ def score_entry(net, entry_id):
         result = simulate_network(net)
         best_score, best_gene, per_gene_scores = compute_oscillator_fitness(result)
         fitness = {
-            "score": round(best_score, 2),
+            "score": round(best_score, 6),
             "best_gene": best_gene,
-            "per_gene_scores": {g: round(s, 2) for g, s in per_gene_scores.items()},
+            "per_gene_scores": {g: round(s, 6) for g, s in per_gene_scores.items()},
         }
     except Exception as e:
         fitness = {
@@ -51,16 +55,21 @@ def score_entry(net, entry_id):
         "fitness": fitness,
     }
 
-def compute_generation_initial(genNumber):
+
+def compute_generation_initial(genNumber, mp_pool=None):
     N_NETWORKS = 100
     OUT_PATH = "generations/generation_" + str(genNumber) + ".json"
-    networks_out = []
+
+    prepared = []
     for i in range(N_NETWORKS):
         net = generate_random_network()
         net = prune_unconnected_genes(net)
+        prepared.append((net, i))
 
-        entry = score_entry(net, i)
-        networks_out.append(entry)
+    if mp_pool is not None:
+        networks_out = mp_pool.starmap(score_entry, prepared)
+    else:
+        networks_out = [score_entry(net, i) for net, i in prepared]
 
     networks_out = sorted(
         networks_out,
@@ -76,12 +85,12 @@ def compute_elite_initial(networks, elite_count):
     return copy.deepcopy(networks[:elite_count])
 
 
-def generate_children_from_rejected(pool, n_children, start_id):
+def generate_children_from_rejected(pool, n_children, start_id, mp_pool=None):
     def fitness_of(entry):
         score = entry["fitness"]["score"]
         return score if score is not None else float("inf")
 
-    children = []
+    prepared = []
     for i in range(n_children):
         a, b = random.sample(pool, 2)
         parent = a if fitness_of(a) <= fitness_of(b) else b
@@ -92,12 +101,17 @@ def generate_children_from_rejected(pool, n_children, start_id):
             "y0": parent["y0"],
         }
         child = apply_mutation(genome)
-        children.append(score_entry(child, start_id + i))
+        prepared.append((child, start_id + i))
+
+    if mp_pool is not None:
+        children = mp_pool.starmap(score_entry, prepared)
+    else:
+        children = [score_entry(net, eid) for net, eid in prepared]
 
     return children
 
 
-def generationCreate(elite_percent, network, i, immigrant_count=20):
+def generationCreate(elite_percent, network, i, mp_pool=None):
     elites = compute_elite_initial(network["networks"], elite_percent)
     elite_clones = []
     for idx, entry in enumerate(elites):
@@ -107,7 +121,7 @@ def generationCreate(elite_percent, network, i, immigrant_count=20):
     n_bred = 100 - elite_percent
 
     children = generate_children_from_rejected(
-        network["networks"], n_bred, start_id=elite_percent
+        network["networks"], n_bred, start_id=elite_percent, mp_pool=mp_pool
     )
 
     next_gen = elite_clones + children
@@ -117,36 +131,74 @@ def generationCreate(elite_percent, network, i, immigrant_count=20):
         key=lambda x: x["fitness"]["score"] if x["fitness"]["score"] is not None else float("inf"),
     )
 
-    return {"generation": (i+1), "networks": next_gen}
+    return {"generation": (i + 1), "networks": next_gen}
+import time
 
 if __name__ == "__main__":
-    while True:
-        compute_generation_initial(1)
+    pool = mp.Pool(processes=os.cpu_count() - 2)
+    try:
+        total_start_time = time.perf_counter()
+        successCount = 0
+        success = {}
+        totalCount = 0
 
-        with open("generations/generation_1.json") as f:
-            data = json.load(f)
+        while successCount < 10:
+            totalCount +=1
+            compute_generation_initial(1, mp_pool=pool)
 
-        best_fitness = data["networks"][0]["fitness"]["score"]
-        iteration = 1
-
-        while iteration <= 500:
-            data = generationCreate(10, data, iteration)
-
-            new_best = data["networks"][0]["fitness"]["score"]
-            best_fitness = min(best_fitness, new_best)
-
-            print(f"Generation {iteration}:                 best fitness = {best_fitness}")
-
-            iteration += 1
-
-        if best_fitness <= 100:
-            print(f"Target reached: {best_fitness}")
-            with open("generations/generation_success_2.json", "w") as f:
-                json.dump(data, f)
-            with open("generations/generation_success_2.json") as f:
+            with open("generations/generation_1.json") as f:
                 data = json.load(f)
 
-            best_network = data["networks"][0]
-            print("Best fitness:", best_network["fitness"]["score"], "gene:", best_network["fitness"]["best_gene"])
-            visualize_network(best_network)
-        print("Reached 500 generations. Restarting...")
+            best_fitness = data["networks"][0]["fitness"]["score"]
+            iteration = 1
+            limit = 300
+            limit_extended = False
+            start_time = time.perf_counter()
+
+            while best_fitness > 100 and iteration <= limit:
+                data = generationCreate(10, data, iteration, mp_pool=pool)
+                new_best = data["networks"][0]["fitness"]["score"]
+                best_fitness = min(best_fitness, new_best)
+                if iteration % 20 == 0:
+                    print(f"Generation: {iteration}, fitness: {best_fitness}")
+                if best_fitness < 750 and not limit_extended:
+                    limit += 500
+                    limit_extended = True
+
+                iteration += 1
+
+            elapsed_time = time.perf_counter() - start_time
+            print(f"{elapsed_time:.4f} seconds for {iteration - 1} generations")
+
+            if best_fitness <= 100:
+                best_network = data["networks"][0]
+                success[totalCount] = {
+                    "generations_used": iteration - 1,
+                    "elapsed_seconds": elapsed_time,
+                    "final_fitness": best_fitness,
+                    "success": "success"
+                }
+                print(f"Target reached: {best_fitness}")
+                with open(f"generations/generation_success_{successCount}.json", "w") as f:
+                    json.dump(data, f)
+                print("Best fitness:", best_network["fitness"]["score"], "gene:", best_network["fitness"]["best_gene"])
+            #    visualize_network(best_network, save_path=f"generations/generation_success_{successCount}.png")                
+                successCount += 1
+            else:
+                print("---------------------------------------Reached generation limit---------------------------------------")
+                success[totalCount] = {
+                    "generations_used": iteration - 1,
+                    "elapsed_seconds": elapsed_time,
+                    "final_fitness": best_fitness,
+                    "success": "FAIL"
+                }
+
+        total_elapsed = time.perf_counter() - total_start_time
+        print(f"Total time across all attempts: {total_elapsed:.4f} seconds")
+        print(json.dumps(success, indent=2))
+
+        with open("generations/success_summary.json", "w") as f:
+            json.dump(success, f, indent=2)
+    finally:
+        pool.close()
+        pool.join()

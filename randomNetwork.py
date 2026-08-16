@@ -6,8 +6,8 @@ def generate_random_network():
     two_input_laws = ["AND", "OR", "NOR", "NAND", "XOR", "EQ"]
     rate_laws = single_input_laws + two_input_laws
 
-    number_genes = random.randint(3, 5)
-    number_connections = random.randint(4, 8)
+    number_genes = random.randint(3, 15)
+    number_connections = random.randint(4, 12)
 
     genes = [f"Gene{i}" for i in range(number_genes)]
     degradation_rates = {g: round(random.uniform(0.05, 1.0), 2) for g in genes}

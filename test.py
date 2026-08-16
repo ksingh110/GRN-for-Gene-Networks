@@ -56,20 +56,20 @@ def network_to_antimony(network):
     return "\n".join(lines)
 
 
-def visualize_network(network, t_end=50, n_points=100, target_pattern=TARGET_PATTERN):
+def visualize_network(network, t_end=50, n_points=100, target_pattern=TARGET_PATTERN, save_path=None):
     antimony_str = network_to_antimony(network)
     r = te.loada(antimony_str)
     result = r.simulate(0, t_end, n_points)
 
     r.plot(result, xlabel="time", ylabel="expression", title="Gene expression trajectories")
 
-    if target_pattern is not None:
+    if save_path is not None:
         import matplotlib.pyplot as plt
-        target_times = [i * (t_end / (len(target_pattern) - 1)) for i in range(len(target_pattern))]
-        plt.scatter(target_times, target_pattern, color="black", marker="x", label="target", zorder=5)
-        plt.legend()
+        plt.savefig(save_path, dpi=300, bbox_inches="tight")
+        plt.close()
+    else:
+        import matplotlib.pyplot as plt
         plt.show()
-
 
 if __name__ == "__main__":
     with open("generations/generation_success_2.json") as f:
