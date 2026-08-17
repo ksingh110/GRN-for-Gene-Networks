@@ -142,7 +142,11 @@ if __name__ == "__main__":
         success = {}
         totalCount = 0
 
-        while successCount < 10:
+        while successCount < 100:
+            print("Current Iteration: " + str(totalCount+1))
+            print("Number of Successes: " + str(successCount))
+            print("Number of Failures: " + str(totalCount-successCount))
+
             totalCount +=1
             compute_generation_initial(1, mp_pool=pool)
 
@@ -151,7 +155,7 @@ if __name__ == "__main__":
 
             best_fitness = data["networks"][0]["fitness"]["score"]
             iteration = 1
-            limit = 300
+            limit = 500
             limit_extended = False
             start_time = time.perf_counter()
 
@@ -162,7 +166,7 @@ if __name__ == "__main__":
                 if iteration % 20 == 0:
                     print(f"Generation: {iteration}, fitness: {best_fitness}")
                 if best_fitness < 750 and not limit_extended:
-                    limit += 500
+                    limit += 300
                     limit_extended = True
 
                 iteration += 1
