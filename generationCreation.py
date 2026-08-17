@@ -58,7 +58,7 @@ def score_entry(net, entry_id):
 
 def compute_generation_initial(genNumber, mp_pool=None):
     N_NETWORKS = 100
-    OUT_PATH = "generations/generation_" + str(genNumber) + ".json"
+    OUT_PATH = "generations_2/generation_" + str(genNumber) + ".json"
 
     prepared = []
     for i in range(N_NETWORKS):
@@ -139,18 +139,22 @@ if __name__ == "__main__":
     try:
         total_start_time = time.perf_counter()
         successCount = 0
-        success = {}
         totalCount = 0
+        success = {}
 
         while successCount < 100:
-            print("Current Iteration: " + str(totalCount+1))
+            print("Current Iteration: " + str(totalCount + 1))
             print("Number of Successes: " + str(successCount))
-            print("Number of Failures: " + str(totalCount-successCount))
+            print("Number of Failures: " + str(totalCount - successCount))
 
-            totalCount +=1
+            totalCount += 1
+
+            seed = random.randrange(2**32)
+            random.seed(seed)
+
             compute_generation_initial(1, mp_pool=pool)
 
-            with open("generations/generation_1.json") as f:
+            with open("generations_2/generation_1.json") as f:
                 data = json.load(f)
 
             best_fitness = data["networks"][0]["fitness"]["score"]
@@ -174,35 +178,42 @@ if __name__ == "__main__":
             elapsed_time = time.perf_counter() - start_time
             print(f"{elapsed_time:.4f} seconds for {iteration - 1} generations")
 
+            best_network = data["networks"][0]
+
             if best_fitness <= 100:
-                best_network = data["networks"][0]
+                print(f"Target reached: {best_fitness}")
+                with open(f"generations_2/generation_success_{successCount+1}.json", "w") as f:
+                    json.dump(data, f)
+                print("Best fitness:", best_network["fitness"]["score"], "gene:", best_network["fitness"]["best_gene"])
                 success[totalCount] = {
+                    "attempt": totalCount,
+                    "seed": seed,
                     "generations_used": iteration - 1,
                     "elapsed_seconds": elapsed_time,
                     "final_fitness": best_fitness,
-                    "success": "success"
+                    "success": "success",
+                    "best_network": best_network,
                 }
-                print(f"Target reached: {best_fitness}")
-                with open(f"generations/generation_success_{successCount}.json", "w") as f:
-                    json.dump(data, f)
-                print("Best fitness:", best_network["fitness"]["score"], "gene:", best_network["fitness"]["best_gene"])
-            #    visualize_network(best_network, save_path=f"generations/generation_success_{successCount}.png")                
                 successCount += 1
             else:
                 print("---------------------------------------Reached generation limit---------------------------------------")
+                with open(f"generations_2/generation_failure_{totalCount}.json", "w") as f:
+                    json.dump(data, f)
                 success[totalCount] = {
+                    "attempt": totalCount,
+                    "seed": seed,
                     "generations_used": iteration - 1,
                     "elapsed_seconds": elapsed_time,
                     "final_fitness": best_fitness,
-                    "success": "FAIL"
+                    "success": "FAIL",
+                    "best_network": best_network,
                 }
+
+            with open("generations_2/success_summary.json", "w") as f:
+                json.dump(success, f, indent=2)
 
         total_elapsed = time.perf_counter() - total_start_time
         print(f"Total time across all attempts: {total_elapsed:.4f} seconds")
-        print(json.dumps(success, indent=2))
-
-        with open("generations/success_summary.json", "w") as f:
-            json.dump(success, f, indent=2)
     finally:
         pool.close()
         pool.join()
