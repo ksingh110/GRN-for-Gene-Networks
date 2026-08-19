@@ -58,7 +58,7 @@ def score_entry(net, entry_id):
 
 def compute_generation_initial(genNumber, mp_pool=None):
     N_NETWORKS = 100
-    OUT_PATH = "generations_2/generation_" + str(genNumber) + ".json"
+    OUT_PATH = "generations/generation_" + str(genNumber) + ".json"
 
     prepared = []
     for i in range(N_NETWORKS):
@@ -154,7 +154,7 @@ if __name__ == "__main__":
 
             compute_generation_initial(1, mp_pool=pool)
 
-            with open("generations_2/generation_1.json") as f:
+            with open("generations/generation_1.json") as f:
                 data = json.load(f)
 
             best_fitness = data["networks"][0]["fitness"]["score"]
@@ -182,7 +182,7 @@ if __name__ == "__main__":
 
             if best_fitness <= 100:
                 print(f"Target reached: {best_fitness}")
-                with open(f"generations_2/generation_success_{successCount+1}.json", "w") as f:
+                with open(f"generations/generation_success_{successCount+1}.json", "w") as f:
                     json.dump(data, f)
                 print("Best fitness:", best_network["fitness"]["score"], "gene:", best_network["fitness"]["best_gene"])
                 success[totalCount] = {
@@ -197,7 +197,7 @@ if __name__ == "__main__":
                 successCount += 1
             else:
                 print("---------------------------------------Reached generation limit---------------------------------------")
-                with open(f"generations_2/generation_failure_{totalCount}.json", "w") as f:
+                with open(f"generations/generation_failure_{totalCount}.json", "w") as f:
                     json.dump(data, f)
                 success[totalCount] = {
                     "attempt": totalCount,
@@ -209,7 +209,7 @@ if __name__ == "__main__":
                     "best_network": best_network,
                 }
 
-            with open("generations_2/success_summary.json", "w") as f:
+            with open("generations/success_summary.json", "w") as f:
                 json.dump(success, f, indent=2)
 
         total_elapsed = time.perf_counter() - total_start_time

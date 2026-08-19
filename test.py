@@ -72,7 +72,7 @@ def visualize_network(network, t_end=50, n_points=100, target_pattern=TARGET_PAT
         plt.show()
 
 if __name__ == "__main__":
-    with open("generations/generation_success_2.json") as f:
+    with open("generations_2/generation_success_100.json") as f:
         data = json.load(f)
 
     best_network = data["networks"][0]
