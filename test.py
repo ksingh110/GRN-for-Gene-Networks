@@ -2,7 +2,8 @@ import json
 import tellurium as te
 from collections import defaultdict
 
-TARGET_PATTERN = [5.0, 30.0, 5.0, 30.0, 5.0, 30.0, 5.0, 30.0, 5.0, 30.0]
+# oscillator pattern: TARGET_PATTERN = [5.0, 30.0, 5.0, 30.0, 5.0, 30.0, 5.0, 30.0, 5.0, 30.0]
+TARGET_PATTERN = [5.0, 5.0, 5.0, 5.0, 5.0, 30.0, 30.0, 30.0, 30.0, 30.0]
 
 
 def build_rate_term(e):
@@ -53,6 +54,7 @@ def network_to_antimony(network):
         lines.append(f"  J_{g}_synth: -> {g}; {synth_rate};")
         lines.append(f"  J_{g}_deg: {g} -> ; {degradation_rates[g]}*{g};")
     lines.append("end")
+    print(lines)
     return "\n".join(lines)
 
 
@@ -72,7 +74,7 @@ def visualize_network(network, t_end=50, n_points=100, target_pattern=TARGET_PAT
         plt.show()
 
 if __name__ == "__main__":
-    with open("generations_2/generation_success_100.json") as f:
+    with open("generations/generation_success_88.json") as f:
         data = json.load(f)
 
     best_network = data["networks"][0]

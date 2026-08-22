@@ -8,8 +8,9 @@ from randomNetwork import generate_random_network, prune_unconnected_genes
 from fastsimulate import simulate_network
 from mutateGeneration import apply_mutation
 from test import visualize_network
-
-TARGET_PATTERN = [5.0, 30.0, 5.0, 30.0, 5.0, 30.0, 5.0, 30.0, 5.0, 30.0]
+# oscillator pattern: TARGET_PATTERN = [5.0, 30.0, 5.0, 30.0, 5.0, 30.0, 5.0, 30.0, 5.0, 30.0]
+# switcg pattern: TARGET_PATTERN = [30.0, 30.0, 30.0, 30.0, 30.0,5.0, 5.0, 5.0, 5.0, 5.0]
+TARGET_PATTERN = [30.0, 30.0, 30.0, 30.0, 5.0,5.0, 30.0, 30.0, 30.0, 30.0]
 
 
 def compute_oscillator_fitness(result, target_pattern=TARGET_PATTERN):
@@ -135,7 +136,7 @@ def generationCreate(elite_percent, network, i, mp_pool=None):
 import time
 
 if __name__ == "__main__":
-    pool = mp.Pool(processes=os.cpu_count() - 2)
+    pool = mp.Pool(processes=os.cpu_count() - 4)
     try:
         total_start_time = time.perf_counter()
         successCount = 0
@@ -159,7 +160,7 @@ if __name__ == "__main__":
 
             best_fitness = data["networks"][0]["fitness"]["score"]
             iteration = 1
-            limit = 500
+            limit = 300
             limit_extended = False
             start_time = time.perf_counter()
 
@@ -169,7 +170,7 @@ if __name__ == "__main__":
                 best_fitness = min(best_fitness, new_best)
                 if iteration % 20 == 0:
                     print(f"Generation: {iteration}, fitness: {best_fitness}")
-                if best_fitness < 750 and not limit_extended:
+                if best_fitness < 200 and not limit_extended:
                     limit += 300
                     limit_extended = True
 
