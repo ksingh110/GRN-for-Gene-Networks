@@ -31,6 +31,34 @@ def build_rate_term(e):
     if law == "EQ":
         return f"{Vf}*(1 + {K1}*{A_n}*{B_n})/(1 + {K1}*{A_n} + {K2}*{B_n} + {K3}*{A_n}*{B_n})"
 
+def saveAntimony(inputPath, savingPath):
+    with open(inputPath) as f:
+        data = json.load(f)
+
+    network = data["best_network"]
+    genes = network["genes"]
+    edges = network["edges"]
+    y0 = network["y0"]
+    degradation_rates = network["degradation_rates"]
+    lines = ["model network"]
+    for g in genes:
+        lines.append(f"  {g} = {y0[g]};")
+    lines.append("")
+    regs_by_target = defaultdict(list)
+    for e in edges:
+        regs_by_target[e["target"]].append(e)
+    for g in genes:
+        regs = regs_by_target[g]
+        if regs:
+            terms = [build_rate_term(e) for e in regs]
+            synth_rate = " + ".join(terms)
+        else:
+            synth_rate = "0"
+        lines.append(f"  J_{g}_synth: -> {g}; {synth_rate};\n")
+        lines.append(f"  J_{g}_deg: {g} -> ; {degradation_rates[g]}*{g};\n")
+    lines.append("end")
+    with open(savingPath, "w") as file:
+        file.writelines(lines)
 
 def network_to_antimony(network):
     genes = network["genes"]
@@ -54,30 +82,28 @@ def network_to_antimony(network):
         lines.append(f"  J_{g}_synth: -> {g}; {synth_rate};")
         lines.append(f"  J_{g}_deg: {g} -> ; {degradation_rates[g]}*{g};")
     lines.append("end")
-    print(lines)
     return "\n".join(lines)
 
 
-def visualize_network(network, t_end=50, n_points=100, target_pattern=TARGET_PATTERN, save_path=None):
-    antimony_str = network_to_antimony(network)
-    r = te.loada(antimony_str)
-    result = r.simulate(0, t_end, n_points)
-
-    r.plot(result, xlabel="time", ylabel="expression", title="Gene expression trajectories")
-
-    if save_path is not None:
-        import matplotlib.pyplot as plt
-        plt.savefig(save_path, dpi=300, bbox_inches="tight")
-        plt.close()
-    else:
-        import matplotlib.pyplot as plt
-        plt.show()
-
-if __name__ == "__main__":
-    with open("generations/generation_success_88.json") as f:
+def visualize_network(inputPath, savingPath):
+    with open(inputPath) as f:
         data = json.load(f)
 
-    best_network = data["networks"][0]
+    network = data["best_network"]
+    antimony_str = network_to_antimony(network)
+    r = te.loada(antimony_str)
+    result = r.simulate(0, 50, 100)
+    r.plot(result, xlabel="time", ylabel="expression", title="Gene expression trajectories")
+    import matplotlib.pyplot as plt
+    plt.savefig(savingPath, dpi=300, bbox_inches="tight")
+    
+    
+
+if __name__ == "__main__":
+    with open("results_cli/refine_success_1.json") as f:
+        data = json.load(f)
+
+    best_network = data["best_network"]
     print("Best fitness:", best_network["fitness"]["score"], "gene:", best_network["fitness"]["best_gene"])
 
     visualize_network(best_network)
