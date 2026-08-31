@@ -13,15 +13,24 @@ def generate_random_network():
     degradation_rates = {g: round(random.uniform(0.05, 1.0), 2) for g in genes}
     y0 = {g: round(random.uniform(0, 30), 2) for g in genes}
     edges = []
+    gene_max = {g: 0 for g in genes}
 
     for _ in range(number_connections):
         law = random.choice(rate_laws)
-        target_gene = random.choice(genes)
+
+        if law in single_input_laws:
+            valid_targets = [g for g in genes if gene_max[g] <= 1]
+        else:
+            valid_targets = [g for g in genes if gene_max[g] <= 0]
+
+        if not valid_targets:
+            continue
+
+        target_gene = random.choice(valid_targets)
         non_target_gene = [g for g in genes if g != target_gene]
 
         if law in single_input_laws:
             regulator = random.choice(non_target_gene)
-
             edges.append({
                 "regulator": regulator,
                 "regulator2": None,
@@ -31,10 +40,9 @@ def generate_random_network():
                 "Ks": round(random.uniform(0.01, 1.0), 2),
                 "n": round(random.uniform(0, 8.0), 2),
             })
-
+            gene_max[target_gene] += 1
         else:
             reg_a, reg_b = random.sample(non_target_gene, 2)
-
             edges.append({
                 "regulator": reg_a,
                 "regulator2": reg_b,
@@ -47,6 +55,7 @@ def generate_random_network():
                 "n1": round(random.uniform(0, 8.0), 2),
                 "n2": round(random.uniform(0, 8.0), 2),
             })
+            gene_max[target_gene] += 2
 
     return {
         "genes": genes,
@@ -54,7 +63,6 @@ def generate_random_network():
         "degradation_rates": degradation_rates,
         "y0": y0,
     }
-
 
 def prune_unconnected_genes(network):
     genes = network["genes"]

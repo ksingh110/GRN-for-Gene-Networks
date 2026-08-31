@@ -13,6 +13,17 @@ MOVE_DAMAGE = {
 }
 
 
+def gene_slots_used(edges, gene, exclude_edge=None):
+    total = 0
+    for e in edges:
+        if e is exclude_edge:
+            continue
+        if e["target"] != gene:
+            continue
+        total += 2 if e["regulator2"] is not None else 1
+    return total
+
+
 def mutate_add_edge(target, law, regulator, regulator2=None):
     if law in SINGLE_INPUT_LAWS:
         return {
@@ -39,10 +50,22 @@ def mutate_add_edge(target, law, regulator, regulator2=None):
         }
 
 
-def mutate_law(edge, genes):
+def mutate_law(edge, edges, genes):
     is_two_input = edge["regulator2"] is not None
     all_laws = SINGLE_INPUT_LAWS + TWO_INPUT_LAWS
-    law_pool = [l for l in all_laws if l != edge["rate_law"]]
+
+    if is_two_input:
+        law_pool = [l for l in all_laws if l != edge["rate_law"]]
+    else:
+        others_used = gene_slots_used(edges, edge["target"], exclude_edge=edge)
+        room_for_two = others_used == 0
+        law_pool = [l for l in all_laws if l != edge["rate_law"]]
+        if not room_for_two:
+            law_pool = [l for l in law_pool if l in SINGLE_INPUT_LAWS]
+
+    if not law_pool:
+        return
+
     new_law = random.choice(law_pool)
     new_is_two_input = new_law in TWO_INPUT_LAWS
 
@@ -58,7 +81,8 @@ def mutate_law(edge, genes):
             edge.pop("Ks", None)
             edge.pop("n", None)
         else:
-            new_law = random.choice([l for l in SINGLE_INPUT_LAWS if l != edge["rate_law"]])
+            single_only = [l for l in SINGLE_INPUT_LAWS if l != edge["rate_law"]]
+            new_law = random.choice(single_only) if single_only else edge["rate_law"]
             new_is_two_input = False
 
     elif not new_is_two_input and is_two_input:
@@ -69,6 +93,7 @@ def mutate_law(edge, genes):
             edge.pop(k, None)
 
     edge["rate_law"] = new_law
+
 
 def mutate_parameters(edges):
     edge = random.choice(edges)
@@ -114,22 +139,23 @@ def apply_mutation(network):
         edges.remove(random.choice(edges))
 
     elif mutation == "add_edge":
-        target = random.choice(genes)
-        candidates = [g for g in genes if g != target]
-        p = random.random()
-        if p > 0.5 and len(candidates) >= 2:
-            law_pool = SINGLE_INPUT_LAWS + TWO_INPUT_LAWS
-        else:
-            law_pool = SINGLE_INPUT_LAWS
-        law = random.choice(law_pool)
-        if law in SINGLE_INPUT_LAWS:
-            regulator = random.choice(candidates)
-            edges.append(mutate_add_edge(target, law, regulator))
-        else:
-            reg_a, reg_b = random.sample(candidates, 2)
-            edges.append(mutate_add_edge(target, law, reg_a, reg_b))
+        open_genes = [g for g in genes if gene_slots_used(edges, g) < 2]
+        if open_genes:
+            target = random.choice(open_genes)
+            room = 2 - gene_slots_used(edges, target)
+            candidates = [g for g in genes if g != target]
+
+            law_pool = (SINGLE_INPUT_LAWS + TWO_INPUT_LAWS) if room == 2 else SINGLE_INPUT_LAWS
+            law = random.choice(law_pool)
+
+            if law in SINGLE_INPUT_LAWS:
+                regulator = random.choice(candidates)
+                edges.append(mutate_add_edge(target, law, regulator))
+            elif len(candidates) >= 2:
+                reg_a, reg_b = random.sample(candidates, 2)
+                edges.append(mutate_add_edge(target, law, reg_a, reg_b))
 
     elif mutation == "change_law":
-        mutate_law(random.choice(edges), genes)
+        mutate_law(random.choice(edges), edges, genes)
 
     return net
