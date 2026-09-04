@@ -1,0 +1,16 @@
+antimony
+appdirs
+jinja2
+libroadrunner
+matplotlib
+networkx
+numpy
+pandas
+phrasedml
+pydot
+python-libcombine
+python-libnuml
+python-libsbml
+python-libsedml
+scipy
+tellurium

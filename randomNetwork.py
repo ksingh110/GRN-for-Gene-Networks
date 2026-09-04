@@ -1,9 +1,9 @@
 import random
 
 
-def generate_random_network():
+def generate_random_network(logic_gates=None):
     single_input_laws = ["activation", "inhibition"]
-    two_input_laws = ["AND", "OR", "NOR", "NAND", "XOR", "EQ"]
+    two_input_laws = ["AND", "OR", "NOR", "NAND", "XOR", "EQ"] if logic_gates is None else logic_gates
     rate_laws = single_input_laws + two_input_laws
 
     number_genes = random.randint(3, 15)

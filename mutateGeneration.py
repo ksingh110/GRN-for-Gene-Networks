@@ -50,9 +50,10 @@ def mutate_add_edge(target, law, regulator, regulator2=None):
         }
 
 
-def mutate_law(edge, edges, genes):
+def mutate_law(edge, edges, genes, logic_gates=None):
     is_two_input = edge["regulator2"] is not None
-    all_laws = SINGLE_INPUT_LAWS + TWO_INPUT_LAWS
+    allowed_two_input_laws = TWO_INPUT_LAWS if logic_gates is None else logic_gates
+    all_laws = SINGLE_INPUT_LAWS + allowed_two_input_laws
 
     if is_two_input:
         law_pool = [l for l in all_laws if l != edge["rate_law"]]
@@ -116,7 +117,7 @@ def mutate_degradation(degradation_rates, genes):
     degradation_rates[gene] = round(random.uniform(0.05, 1.0), 2)
 
 
-def apply_mutation(network):
+def apply_mutation(network, logic_gates=None):
     net = copy.deepcopy(network)
     genes = net["genes"]
     edges = net["edges"]
@@ -145,7 +146,8 @@ def apply_mutation(network):
             room = 2 - gene_slots_used(edges, target)
             candidates = [g for g in genes if g != target]
 
-            law_pool = (SINGLE_INPUT_LAWS + TWO_INPUT_LAWS) if room == 2 else SINGLE_INPUT_LAWS
+            allowed_two_input_laws = TWO_INPUT_LAWS if logic_gates is None else logic_gates
+            law_pool = (SINGLE_INPUT_LAWS + allowed_two_input_laws) if room == 2 else SINGLE_INPUT_LAWS
             law = random.choice(law_pool)
 
             if law in SINGLE_INPUT_LAWS:
@@ -156,6 +158,6 @@ def apply_mutation(network):
                 edges.append(mutate_add_edge(target, law, reg_a, reg_b))
 
     elif mutation == "change_law":
-        mutate_law(random.choice(edges), edges, genes)
+        mutate_law(random.choice(edges), edges, genes, logic_gates)
 
     return net

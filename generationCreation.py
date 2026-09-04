@@ -68,14 +68,14 @@ def score_entry(net, entry_id, target_pattern):
         "fitness": fitness,
     }
 
-def compute_generation_initial(genNumber, target_pattern, mp_pool=None):
+def compute_generation_initial(genNumber, target_pattern, mp_pool=None, logic_gates=None):
     N_NETWORKS = 100
     OUT_PATH = "generations/generation_" + str(genNumber) + ".json"
 
     prepared = []
 
     for i in range(N_NETWORKS):
-        net = generate_random_network()
+        net = generate_random_network(logic_gates)
         net = prune_unconnected_genes(net)
 
         prepared.append((net, i, target_pattern))
@@ -97,6 +97,7 @@ def compute_generation_initial(genNumber, target_pattern, mp_pool=None):
 
     output = {
         "generation": genNumber,
+        "logic_gates": logic_gates,
         "networks": networks_out,
     }
 
@@ -112,7 +113,8 @@ def generate_children_from_rejected(
     n_children,
     start_id,
     target_pattern,
-    mp_pool=None
+    mp_pool=None,
+    logic_gates=None,
 ):
     def fitness_of(entry):
         score = entry["fitness"]["score"]
@@ -131,7 +133,7 @@ def generate_children_from_rejected(
             "y0": parent["y0"],
         }
 
-        child = apply_mutation(genome)
+        child = apply_mutation(genome, logic_gates)
         prepared.append((child, start_id + i, target_pattern))
 
     if mp_pool is not None:
@@ -149,7 +151,8 @@ def generationCreate(
     network,
     i,
     target_pattern,
-    mp_pool=None
+    mp_pool=None,
+    logic_gates=None,
 ):
     elites = compute_elite_initial(network["networks"], elite_percent)
 
@@ -168,6 +171,7 @@ def generationCreate(
         start_id=elite_percent,
         target_pattern=target_pattern,
         mp_pool=mp_pool,
+        logic_gates=logic_gates,
     )
 
     next_gen = elite_clones + children
@@ -181,6 +185,7 @@ def generationCreate(
 
     return {
         "generation": i + 1,
+        "logic_gates": logic_gates,
         "networks": next_gen,
     }
 import time

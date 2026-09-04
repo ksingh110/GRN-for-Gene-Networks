@@ -27,6 +27,7 @@ from refineGeneration import (
 )
 from diagram import diagram_network
 from visualize import visualize_network, saveAntimony
+from randomNetwork import prune_unconnected_genes
 
 
 VERSION = "0.3.0"
@@ -36,6 +37,28 @@ os.chdir(BASE_DIR)
 OSCILLATOR = [5.0, 30.0, 5.0, 30.0, 5.0, 30.0, 5.0, 30.0, 5.0, 30.0]
 SWITCH = [30.0, 30.0, 30.0, 30.0, 30.0,5.0, 5.0, 5.0, 5.0, 5.0]
 DIP = [30.0, 30.0, 30.0, 30.0, 5.0,5.0, 30.0, 30.0, 30.0, 30.0]
+ALL_LOGIC_GATES = ["AND", "OR", "NOR", "NAND", "XOR", "EQ"]
+
+
+def parse_logic_gates(value):
+    if isinstance(value, str):
+        values = value.replace(",", " ").split()
+    else:
+        values = [part for value_part in value for part in value_part.replace(",", " ").split()]
+
+    values = [value.upper() for value in values]
+
+    if values == ["ALL"]:
+        return list(ALL_LOGIC_GATES)
+
+    if values == ["NONE"]:
+        return []
+
+    invalid = [value for value in values if value not in ALL_LOGIC_GATES]
+    if invalid:
+        raise ValueError("Unknown logic gates: " + ", ".join(invalid))
+
+    return list(dict.fromkeys(values))
 
 
 DEFAULTS = {
@@ -44,6 +67,8 @@ DEFAULTS = {
     "trials": None,
     "target": 100.0,
     "target_pattern": "OSCILLATOR",
+    "exclude_logic_gates": [],
+    "logic_gates": list(ALL_LOGIC_GATES),
     "max_generations": 500,
     "extend_threshold": 750.0,
     "extend_by": 300,
@@ -112,6 +137,14 @@ def load_config(path):
         "target_pattern",
         cfg["target_pattern"],
     ).strip().upper()
+
+    cfg["exclude_logic_gates"] = parse_logic_gates(
+        section.get("exclude_logic_gates", "NONE")
+    )
+    cfg["logic_gates"] = [
+        gate for gate in ALL_LOGIC_GATES
+        if gate not in cfg["exclude_logic_gates"]
+    ]
 
     if cfg["target_pattern"] not in {
         "OSCILLATOR",
@@ -322,6 +355,13 @@ def build_parser():
     )
 
     parser.add_argument(
+        "--exclude-logic-gates",
+        nargs="+",
+        default=None,
+        help="Logic gates to exclude: AND OR NOR NAND XOR EQ, ALL, or NONE",
+    )
+
+    parser.add_argument(
         "--max-generations",
         type=int,
         default=None,
@@ -442,6 +482,13 @@ def apply_command_line_arguments(cfg, args):
 
     if args.target_pattern is not None:
         cfg["target_pattern"] = args.target_pattern
+
+    if args.exclude_logic_gates is not None:
+        cfg["exclude_logic_gates"] = parse_logic_gates(args.exclude_logic_gates)
+        cfg["logic_gates"] = [
+            gate for gate in ALL_LOGIC_GATES
+            if gate not in cfg["exclude_logic_gates"]
+        ]
 
     if args.max_generations is not None:
         cfg["max_generations"] = args.max_generations
@@ -584,11 +631,26 @@ def prompt_target_pattern(label, default):
     return raw
 
 
+def prompt_logic_gates(label, default):
+    display = ",".join(default) if default else "NONE"
+    raw = input(f"New value for {label} [{display}]: ").strip()
+
+    if raw == "":
+        return default
+
+    try:
+        return parse_logic_gates(raw)
+    except ValueError as error:
+        print(f"  {error}. Keeping {display}.")
+        return default
+
+
 MENU_ITEMS = [
     ("Mode (evolve/refine_only)", "mode", "mode"),
     ("Refine successful networks", "refine", "bool"),
     ("Refine-only seed path", "refine_seed_path", "str"),
     ("Target pattern", "target_pattern", "target_pattern"),
+    ("Excluded logic gates", "exclude_logic_gates", "logic_gates"),
     ("Run mode (successes/trials)", "_run_mode", "str"),
     (
         "Target successes (if successes)",
@@ -663,6 +725,9 @@ def run_interactive_setup(cfg):
 
             else:
                 value = cfg[key]
+
+                if key == "exclude_logic_gates":
+                    value = ",".join(value) if value else "NONE"
 
                 if value is None or value == "":
                     value = "(unused)"
@@ -757,11 +822,20 @@ def run_interactive_setup(cfg):
                 cfg[key],
             )
 
+        elif kind == "logic_gates":
+            cfg[key] = prompt_logic_gates(label, cfg[key])
+
         else:
             cfg[key] = prompt_str(label, cfg[key])
 
 
 def validate_config(cfg):
+    cfg["exclude_logic_gates"] = parse_logic_gates(cfg["exclude_logic_gates"])
+    cfg["logic_gates"] = [
+        gate for gate in ALL_LOGIC_GATES
+        if gate not in cfg["exclude_logic_gates"]
+    ]
+
     if cfg["mode"] not in {"evolve", "refine_only"}:
         raise ValueError(
             "mode must be evolve or refine_only"
@@ -855,6 +929,7 @@ def run_evolution_trial(
         1,
         target_pattern,
         mp_pool=pool,
+        logic_gates=cfg["logic_gates"],
     )
 
     with open(
@@ -882,6 +957,7 @@ def run_evolution_trial(
             generation_number,
             target_pattern,
             mp_pool=pool,
+            logic_gates=cfg["logic_gates"],
         )
 
         new_best = (
@@ -928,8 +1004,10 @@ def run_evolution_trial(
 
     elapsed = time.perf_counter() - start_time
     converged = best_fitness <= cfg["target"]
-    best_network = data["networks"][0]
-
+    best_network = {
+        **data["networks"][0],
+        **prune_unconnected_genes(data["networks"][0]),
+    }
     if population_file:
         with open(population_file, "a") as file:
             for generation, fitness in population_history:
@@ -943,6 +1021,8 @@ def run_evolution_trial(
         "trial": trial_index,
         "seed": random_seed,
         "target_pattern": cfg["target_pattern"],
+        "excluded_logic_gates": cfg["exclude_logic_gates"],
+        "logic_gates": cfg["logic_gates"],
         "converged": converged,
         "generations_used": generation_number - 1,
         "elapsed_seconds": elapsed,
@@ -986,8 +1066,8 @@ def run_refinement_attempt(
         elite_count=cfg["refine_elite_percent"],
         print_every=cfg["print_every"],
         silent=silent,
+        logic_gates=cfg["logic_gates"],
     )
-
     status = (
         "success"
         if result["converged"]
@@ -1008,6 +1088,8 @@ def run_refinement_attempt(
         "refinement": refinement_index,
         "seed": result["seed"],
         "target_pattern": cfg["target_pattern"],
+        "excluded_logic_gates": cfg["exclude_logic_gates"],
+        "logic_gates": cfg["logic_gates"],
         "converged": result["converged"],
         "generations_used": result[
             "generations_used"
@@ -1058,6 +1140,8 @@ def print_configuration(cfg, config_path):
 
     print(f".....Mode: {cfg['mode']}")
     print(f".....Target pattern: {cfg['target_pattern']}")
+    print(f".....Excluded logic gates: {','.join(cfg['exclude_logic_gates']) if cfg['exclude_logic_gates'] else 'NONE'}")
+    print(f".....Enabled logic gates: {','.join(cfg['logic_gates']) if cfg['logic_gates'] else 'NONE'}")
     print(f".....Results directory: {cfg['results_dir']}/")
     print(f".....Workers: {cfg['workers']}")
 

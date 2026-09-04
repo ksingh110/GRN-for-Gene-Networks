@@ -6,7 +6,7 @@ import time
 
 from fastsimulate import simulate_network
 from mutateGenerationFurther import apply_mutation
-
+from randomNetwork import prune_unconnected_genes
 
 def compute_refinement_fitness(
     net,
@@ -130,6 +130,7 @@ def compute_refinement_generation_from_seed(
     generation_number,
     target_pattern,
     mp_pool=None,
+    logic_gates=None,
 ):
     number_of_networks = 100
 
@@ -146,7 +147,8 @@ def compute_refinement_generation_from_seed(
         number_of_networks,
     ):
         mutant = apply_mutation(
-            copy.deepcopy(seed_network)
+            copy.deepcopy(seed_network),
+            logic_gates,
         )
 
         prepared.append(
@@ -182,6 +184,7 @@ def compute_refinement_generation_from_seed(
 
     return {
         "generation": generation_number,
+        "logic_gates": logic_gates,
         "networks": networks_out,
     }
 
@@ -201,6 +204,7 @@ def generate_refinement_children(
     start_id,
     target_pattern,
     mp_pool=None,
+    logic_gates=None,
 ):
     def fitness_of(entry):
         score = entry["fitness"]["score"]
@@ -235,7 +239,7 @@ def generate_refinement_children(
             "y0": parent["y0"],
         }
 
-        child = apply_mutation(genome)
+        child = apply_mutation(genome, logic_gates)
 
         prepared.append(
             (
@@ -268,6 +272,7 @@ def create_refinement_generation(
     generation_number,
     target_pattern,
     mp_pool=None,
+    logic_gates=None,
 ):
     elites = compute_refinement_elites(
         generation["networks"],
@@ -289,6 +294,7 @@ def create_refinement_generation(
         start_id=elite_count,
         target_pattern=target_pattern,
         mp_pool=mp_pool,
+        logic_gates=logic_gates,
     )
 
     next_generation = (
@@ -304,6 +310,7 @@ def create_refinement_generation(
 
     return {
         "generation": generation_number + 1,
+        "logic_gates": logic_gates,
         "networks": next_generation,
     }
 
@@ -386,8 +393,22 @@ def run_refinement(
     elite_count=10,
     print_every=20,
     silent=False,
+    logic_gates=None,
 ):
     random.seed(random_seed)
+
+    if logic_gates is not None:
+        disallowed_gates = sorted({
+            edge["rate_law"]
+            for edge in seed_network["edges"]
+            if edge["regulator2"] is not None
+            and edge["rate_law"] not in logic_gates
+        })
+        if disallowed_gates:
+            raise ValueError(
+                "Refinement seed contains excluded logic gates: "
+                + ", ".join(disallowed_gates)
+            )
 
     start_time = time.perf_counter()
 
@@ -397,6 +418,7 @@ def run_refinement(
             generation_number=1,
             target_pattern=target_pattern,
             mp_pool=pool,
+            logic_gates=logic_gates,
         )
     )
 
@@ -419,6 +441,7 @@ def run_refinement(
             generation_number,
             target_pattern,
             mp_pool=pool,
+            logic_gates=logic_gates,
         )
 
         new_best = (
@@ -461,8 +484,10 @@ def run_refinement(
         time.perf_counter() - start_time
     )
 
-    best_network = data["networks"][0]
-
+    best_network = {
+        **data["networks"][0],
+        **prune_unconnected_genes(data["networks"][0]),
+    }
     return {
         "converged": best_fitness <= target,
         "seed": random_seed,
