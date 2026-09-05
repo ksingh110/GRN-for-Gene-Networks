@@ -31,7 +31,7 @@ from randomNetwork import prune_unconnected_genes
 
 
 VERSION = "0.3.0"
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 os.chdir(BASE_DIR)
 
 OSCILLATOR = [5.0, 30.0, 5.0, 30.0, 5.0, 30.0, 5.0, 30.0, 5.0, 30.0]
