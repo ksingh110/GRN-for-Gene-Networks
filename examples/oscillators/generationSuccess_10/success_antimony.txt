@@ -1,0 +1,23 @@
+model network  Gene0 = 25.65;  Gene1 = 3.4;  Gene2 = 16.03;  Gene3 = 2.84;  Gene4 = 15.46;  Gene5 = 21.4;  Gene6 = 22.39;  Gene7 = 22.85;  Gene8 = 10.17;  Gene9 = 12.39;  Gene10 = 6.68;  J_Gene0_synth: -> Gene0; 0.66*(0.64*0.18*Gene2^3.19*Gene5^6.45)/(1 + 0.64*Gene2^3.19 + 0.18*Gene5^6.45 + 0.64*0.18*Gene2^3.19*Gene5^6.45);
+  J_Gene0_deg: Gene0 -> ; 0.62*Gene0;
+  J_Gene1_synth: -> Gene1; 0.92*(1 + 0.76*Gene3^5.15*Gene8^2.38)/(1 + 0.76*Gene3^5.15 + 0.92*Gene8^2.38 + 0.76*Gene3^5.15*Gene8^2.38);
+  J_Gene1_deg: Gene1 -> ; 0.33*Gene1;
+  J_Gene2_synth: -> Gene2; (0.78)/(0.8 + Gene8^7.05) + (0.56)/(0.69 + Gene3^3.11);
+  J_Gene2_deg: Gene2 -> ; 0.5*Gene2;
+  J_Gene3_synth: -> Gene3; (0.22)/(0.53 + Gene1^4.89) + (0.29)/(0.48 + Gene5^7.61);
+  J_Gene3_deg: Gene3 -> ; 0.31*Gene3;
+  J_Gene4_synth: -> Gene4; 0.88*(0.08*Gene1^5.21 + 0.95*Gene5^7.79)/(1 + 0.08*Gene1^5.21 + 0.95*Gene5^7.79 + 0.39*Gene1^5.21*Gene5^7.79);
+  J_Gene4_deg: Gene4 -> ; 0.92*Gene4;
+  J_Gene5_synth: -> Gene5; (0.67*Gene6^5.36)/(0.04 + Gene6^5.36) + (0.01)/(0.52 + Gene7^5.98);
+  J_Gene5_deg: Gene5 -> ; 0.31*Gene5;
+  J_Gene6_synth: -> Gene6; 0.98*(0.92*0.18*Gene1^7.24*Gene8^3.19)/(1 + 0.92*Gene1^7.24 + 0.18*Gene8^3.19 + 0.92*0.18*Gene1^7.24*Gene8^3.19);
+  J_Gene6_deg: Gene6 -> ; 0.63*Gene6;
+  J_Gene7_synth: -> Gene7; (0.3*Gene8^5.16)/(0.97 + Gene8^5.16) + (0.47)/(0.8 + Gene9^7.05);
+  J_Gene7_deg: Gene7 -> ; 0.38*Gene7;
+  J_Gene8_synth: -> Gene8; (0.99)/(0.06 + Gene4^4.35) + (0.95)/(0.09 + Gene10^1.9);
+  J_Gene8_deg: Gene8 -> ; 0.62*Gene8;
+  J_Gene9_synth: -> Gene9; (0.4*Gene3^7.23)/(0.56 + Gene3^7.23);
+  J_Gene9_deg: Gene9 -> ; 0.21*Gene9;
+  J_Gene10_synth: -> Gene10; (0.45)/(0.55 + Gene6^1.76) + (0.52)/(0.52 + Gene9^5.17);
+  J_Gene10_deg: Gene10 -> ; 0.98*Gene10;
+end

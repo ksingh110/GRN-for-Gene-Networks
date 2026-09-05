@@ -1,0 +1,276 @@
+{
+  "trial": 4,
+  "seed": 3042805292,
+  "target_pattern": "SWITCH",
+  "excluded_logic_gates": [],
+  "logic_gates": [
+    "AND",
+    "OR",
+    "NOR",
+    "NAND",
+    "XOR",
+    "EQ"
+  ],
+  "converged": true,
+  "generations_used": 26,
+  "elapsed_seconds": 0.7535129579991917,
+  "final_fitness": 89.251834,
+  "best_network": {
+    "id": 12,
+    "genes": [
+      "Gene0",
+      "Gene1",
+      "Gene2",
+      "Gene3",
+      "Gene4",
+      "Gene5",
+      "Gene6",
+      "Gene7"
+    ],
+    "edges": [
+      {
+        "regulator": "Gene1",
+        "regulator2": "Gene5",
+        "target": "Gene6",
+        "rate_law": "XOR",
+        "Vf": 0.99,
+        "K1": 0.41,
+        "K2": 0.83,
+        "K3": 0.01,
+        "n1": 0.9,
+        "n2": 2.51
+      },
+      {
+        "regulator": "Gene3",
+        "regulator2": "Gene7",
+        "target": "Gene2",
+        "rate_law": "AND",
+        "Vf": 0.67,
+        "K1": 0.92,
+        "K2": 0.22,
+        "K3": 0.41,
+        "n1": 3.07,
+        "n2": 6.0
+      },
+      {
+        "regulator": "Gene2",
+        "regulator2": null,
+        "target": "Gene3",
+        "rate_law": "inhibition",
+        "Vf": 0.74,
+        "Ks": 0.82,
+        "n": 4.48
+      },
+      {
+        "regulator": "Gene2",
+        "regulator2": null,
+        "target": "Gene1",
+        "rate_law": "inhibition",
+        "Vf": 0.33,
+        "Ks": 0.44,
+        "n": 0.76
+      },
+      {
+        "regulator": "Gene2",
+        "regulator2": null,
+        "target": "Gene4",
+        "rate_law": "inhibition",
+        "Vf": 0.42,
+        "Ks": 0.65,
+        "n": 6.77
+      },
+      {
+        "regulator": "Gene6",
+        "regulator2": "Gene4",
+        "target": "Gene7",
+        "rate_law": "XOR",
+        "Vf": 0.24,
+        "K1": 0.84,
+        "K2": 0.75,
+        "K3": 0.14,
+        "n1": 5.78,
+        "n2": 5.0
+      },
+      {
+        "regulator": "Gene4",
+        "regulator2": null,
+        "target": "Gene1",
+        "rate_law": "inhibition",
+        "Vf": 0.99,
+        "Ks": 0.15,
+        "n": 7.74
+      },
+      {
+        "regulator": "Gene6",
+        "regulator2": null,
+        "target": "Gene0",
+        "rate_law": "activation",
+        "Vf": 0.58,
+        "Ks": 0.34,
+        "n": 7.11
+      },
+      {
+        "regulator": "Gene6",
+        "regulator2": null,
+        "target": "Gene3",
+        "rate_law": "activation",
+        "Vf": 0.47,
+        "Ks": 0.59,
+        "n": 2.94
+      },
+      {
+        "regulator": "Gene2",
+        "regulator2": null,
+        "target": "Gene0",
+        "rate_law": "activation",
+        "Vf": 0.5,
+        "Ks": 0.78,
+        "n": 4.19
+      }
+    ],
+    "degradation_rates": {
+      "Gene0": 0.37,
+      "Gene1": 0.21,
+      "Gene2": 0.16,
+      "Gene3": 0.64,
+      "Gene4": 0.43,
+      "Gene5": 0.59,
+      "Gene6": 0.72,
+      "Gene7": 0.43
+    },
+    "y0": {
+      "Gene0": 4.71,
+      "Gene1": 23.93,
+      "Gene2": 16.92,
+      "Gene3": 5.24,
+      "Gene4": 1.15,
+      "Gene5": 15.62,
+      "Gene6": 10.37,
+      "Gene7": 21.91
+    },
+    "fitness": {
+      "score": 89.251834,
+      "best_gene": "Gene1",
+      "per_gene_scores": {
+        "Gene0": 3704.738529,
+        "Gene1": 89.251834,
+        "Gene2": 3118.456563,
+        "Gene3": 4058.16619,
+        "Gene4": 4432.315838,
+        "Gene5": 3895.297098,
+        "Gene6": 3772.669655,
+        "Gene7": 3539.975062
+      }
+    }
+  },
+  "pop_history": [
+    [
+      0,
+      1136.757123
+    ],
+    [
+      1,
+      875.827689
+    ],
+    [
+      2,
+      416.748454
+    ],
+    [
+      3,
+      416.748454
+    ],
+    [
+      4,
+      416.748454
+    ],
+    [
+      5,
+      189.718161
+    ],
+    [
+      6,
+      189.718161
+    ],
+    [
+      7,
+      168.232086
+    ],
+    [
+      8,
+      165.405554
+    ],
+    [
+      9,
+      157.024536
+    ],
+    [
+      10,
+      157.024536
+    ],
+    [
+      11,
+      147.141201
+    ],
+    [
+      12,
+      128.754532
+    ],
+    [
+      13,
+      128.452328
+    ],
+    [
+      14,
+      124.689435
+    ],
+    [
+      15,
+      121.849203
+    ],
+    [
+      16,
+      110.574974
+    ],
+    [
+      17,
+      110.574974
+    ],
+    [
+      18,
+      110.574974
+    ],
+    [
+      19,
+      110.574974
+    ],
+    [
+      20,
+      109.795514
+    ],
+    [
+      21,
+      109.795514
+    ],
+    [
+      22,
+      103.399919
+    ],
+    [
+      23,
+      103.317447
+    ],
+    [
+      24,
+      102.877763
+    ],
+    [
+      25,
+      101.970448
+    ],
+    [
+      26,
+      89.251834
+    ]
+  ]
+}

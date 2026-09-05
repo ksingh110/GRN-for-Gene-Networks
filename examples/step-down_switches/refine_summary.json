@@ -1,0 +1,360 @@
+[
+  {
+    "refinement": 0,
+    "seed": 994495573,
+    "target_pattern": "SWITCH",
+    "excluded_logic_gates": [],
+    "logic_gates": [
+      "AND",
+      "OR",
+      "NOR",
+      "NAND",
+      "XOR",
+      "EQ"
+    ],
+    "converged": true,
+    "generations_used": 408,
+    "elapsed_seconds": 9.643584207999083,
+    "final_fitness": 74.994852,
+    "raw_sse": 6.553305,
+    "network_size": 5,
+    "best_network": {
+      "id": 37,
+      "genes": [
+        "Gene1",
+        "Gene2",
+        "Gene3",
+        "Gene4",
+        "Gene7"
+      ],
+      "edges": [
+        {
+          "regulator": "Gene3",
+          "regulator2": "Gene7",
+          "target": "Gene2",
+          "rate_law": "AND",
+          "Vf": 0.81,
+          "K1": 0.49,
+          "K2": 0.6,
+          "K3": 0.1,
+          "n1": 5.48,
+          "n2": 7.48
+        },
+        {
+          "regulator": "Gene2",
+          "regulator2": null,
+          "target": "Gene1",
+          "rate_law": "inhibition",
+          "Vf": 0.38,
+          "Ks": 0.27,
+          "n": 0.76
+        },
+        {
+          "regulator": "Gene2",
+          "regulator2": null,
+          "target": "Gene4",
+          "rate_law": "inhibition",
+          "Vf": 0.77,
+          "Ks": 0.29,
+          "n": 7.27
+        },
+        {
+          "regulator": "Gene4",
+          "regulator2": null,
+          "target": "Gene1",
+          "rate_law": "inhibition",
+          "Vf": 0.99,
+          "Ks": 0.15,
+          "n": 7.63
+        },
+        {
+          "regulator": "Gene2",
+          "regulator2": null,
+          "target": "Gene7",
+          "rate_law": "inhibition",
+          "Vf": 0.68,
+          "Ks": 0.3,
+          "n": 1.11
+        }
+      ],
+      "degradation_rates": {
+        "Gene1": 0.22,
+        "Gene2": 0.16,
+        "Gene3": 0.11,
+        "Gene4": 0.98,
+        "Gene7": 0.43
+      },
+      "y0": {
+        "Gene1": 23.93,
+        "Gene2": 16.92,
+        "Gene3": 5.24,
+        "Gene4": 1.15,
+        "Gene7": 21.91
+      },
+      "fitness": {
+        "score": 74.994852,
+        "raw_sse": 6.553305,
+        "network_size": 5,
+        "best_gene": "Gene1",
+        "per_gene_scores": {
+          "Gene0": 432.345206,
+          "Gene1": 6.553305,
+          "Gene2": 296.901367,
+          "Gene3": 400.357928,
+          "Gene4": 440.400217,
+          "Gene5": 392.295645,
+          "Gene6": 332.374074,
+          "Gene7": 343.803763
+        }
+      }
+    }
+  },
+  {
+    "refinement": 5,
+    "seed": 3856642759,
+    "target_pattern": "SWITCH",
+    "excluded_logic_gates": [],
+    "logic_gates": [
+      "AND",
+      "OR",
+      "NOR",
+      "NAND",
+      "XOR",
+      "EQ"
+    ],
+    "converged": true,
+    "generations_used": 578,
+    "elapsed_seconds": 19.516233499998634,
+    "final_fitness": 74.793388,
+    "raw_sse": 5.908158,
+    "network_size": 7,
+    "best_network": {
+      "id": 58,
+      "genes": [
+        "Gene0",
+        "Gene1",
+        "Gene2",
+        "Gene5",
+        "Gene6",
+        "Gene7"
+      ],
+      "edges": [
+        {
+          "regulator": "Gene6",
+          "regulator2": "Gene0",
+          "target": "Gene2",
+          "rate_law": "OR",
+          "Vf": 0.23,
+          "K1": 0.45,
+          "K2": 0.09,
+          "K3": 0.72,
+          "n1": 7.96,
+          "n2": 4.78
+        },
+        {
+          "regulator": "Gene5",
+          "regulator2": null,
+          "target": "Gene6",
+          "rate_law": "activation",
+          "Vf": 0.94,
+          "Ks": 0.76,
+          "n": 0.88
+        },
+        {
+          "regulator": "Gene7",
+          "regulator2": "Gene2",
+          "target": "Gene1",
+          "rate_law": "EQ",
+          "Vf": 0.16,
+          "K1": 0.92,
+          "K2": 0.99,
+          "K3": 0.04,
+          "n1": 7.9,
+          "n2": 5.5
+        },
+        {
+          "regulator": "Gene1",
+          "regulator2": null,
+          "target": "Gene6",
+          "rate_law": "activation",
+          "Vf": 0.19,
+          "Ks": 0.92,
+          "n": 2.18
+        },
+        {
+          "regulator": "Gene0",
+          "regulator2": null,
+          "target": "Gene7",
+          "rate_law": "activation",
+          "Vf": 0.92,
+          "Ks": 0.05,
+          "n": 5.29
+        },
+        {
+          "regulator": "Gene1",
+          "regulator2": null,
+          "target": "Gene5",
+          "rate_law": "inhibition",
+          "Vf": 0.94,
+          "Ks": 0.23,
+          "n": 2.21
+        },
+        {
+          "regulator": "Gene5",
+          "regulator2": null,
+          "target": "Gene7",
+          "rate_law": "inhibition",
+          "Vf": 0.33,
+          "Ks": 0.07,
+          "n": 4.21
+        }
+      ],
+      "degradation_rates": {
+        "Gene0": 0.39,
+        "Gene1": 0.62,
+        "Gene2": 0.17,
+        "Gene5": 0.96,
+        "Gene6": 0.27,
+        "Gene7": 0.16
+      },
+      "y0": {
+        "Gene0": 13.26,
+        "Gene1": 26.29,
+        "Gene2": 18.19,
+        "Gene5": 1.37,
+        "Gene6": 10.39,
+        "Gene7": 27.09
+      },
+      "fitness": {
+        "score": 74.793388,
+        "raw_sse": 5.908158,
+        "network_size": 7,
+        "best_gene": "Gene7",
+        "per_gene_scores": {
+          "Gene0": 390.446573,
+          "Gene1": 272.899369,
+          "Gene2": 300.863923,
+          "Gene3": 400.300964,
+          "Gene4": 305.571738,
+          "Gene5": 444.481645,
+          "Gene6": 362.30177,
+          "Gene7": 5.908158
+        }
+      }
+    }
+  },
+  {
+    "refinement": 6,
+    "seed": 329894864,
+    "target_pattern": "SWITCH",
+    "excluded_logic_gates": [],
+    "logic_gates": [
+      "AND",
+      "OR",
+      "NOR",
+      "NAND",
+      "XOR",
+      "EQ"
+    ],
+    "converged": true,
+    "generations_used": 24,
+    "elapsed_seconds": 0.5811493750006775,
+    "final_fitness": 73.852614,
+    "raw_sse": 6.994636,
+    "network_size": 5,
+    "best_network": {
+      "id": 62,
+      "genes": [
+        "Gene0",
+        "Gene1",
+        "Gene2",
+        "Gene4",
+        "Gene5"
+      ],
+      "edges": [
+        {
+          "regulator": "Gene5",
+          "regulator2": "Gene4",
+          "target": "Gene2",
+          "rate_law": "NOR",
+          "Vf": 0.75,
+          "K1": 0.19,
+          "K2": 0.24,
+          "K3": 0.51,
+          "n1": 6.86,
+          "n2": 7.81
+        },
+        {
+          "regulator": "Gene0",
+          "regulator2": "Gene1",
+          "target": "Gene4",
+          "rate_law": "NAND",
+          "Vf": 0.19,
+          "K1": 0.79,
+          "K2": 0.94,
+          "K3": 0.48,
+          "n1": 1.3,
+          "n2": 1.5
+        },
+        {
+          "regulator": "Gene2",
+          "regulator2": null,
+          "target": "Gene0",
+          "rate_law": "inhibition",
+          "Vf": 0.66,
+          "Ks": 0.03,
+          "n": 5.47
+        },
+        {
+          "regulator": "Gene2",
+          "regulator2": null,
+          "target": "Gene1",
+          "rate_law": "activation",
+          "Vf": 0.98,
+          "Ks": 0.03,
+          "n": 1.13
+        },
+        {
+          "regulator": "Gene4",
+          "regulator2": "Gene2",
+          "target": "Gene5",
+          "rate_law": "NOR",
+          "Vf": 0.07,
+          "K1": 1.0,
+          "K2": 0.87,
+          "K3": 0.76,
+          "n1": 0.68,
+          "n2": 0.2
+        }
+      ],
+      "degradation_rates": {
+        "Gene0": 0.7,
+        "Gene1": 0.95,
+        "Gene2": 0.98,
+        "Gene4": 0.21,
+        "Gene5": 0.12
+      },
+      "y0": {
+        "Gene0": 23.96,
+        "Gene1": 15.87,
+        "Gene2": 13.64,
+        "Gene4": 15.92,
+        "Gene5": 10.59
+      },
+      "fitness": {
+        "score": 73.852614,
+        "raw_sse": 6.994636,
+        "network_size": 5,
+        "best_gene": "Gene0",
+        "per_gene_scores": {
+          "Gene0": 6.994636,
+          "Gene1": 377.551478,
+          "Gene2": 392.958596,
+          "Gene3": 370.29515,
+          "Gene4": 334.563595,
+          "Gene5": 347.716412
+        }
+      }
+    }
+  }
+]

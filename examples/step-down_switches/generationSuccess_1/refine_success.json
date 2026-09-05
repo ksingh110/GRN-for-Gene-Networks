@@ -1,0 +1,110 @@
+{
+  "refinement": 0,
+  "seed": 994495573,
+  "target_pattern": "SWITCH",
+  "excluded_logic_gates": [],
+  "logic_gates": [
+    "AND",
+    "OR",
+    "NOR",
+    "NAND",
+    "XOR",
+    "EQ"
+  ],
+  "converged": true,
+  "generations_used": 408,
+  "elapsed_seconds": 9.643584207999083,
+  "final_fitness": 74.994852,
+  "raw_sse": 6.553305,
+  "network_size": 5,
+  "best_network": {
+    "id": 37,
+    "genes": [
+      "Gene1",
+      "Gene2",
+      "Gene3",
+      "Gene4",
+      "Gene7"
+    ],
+    "edges": [
+      {
+        "regulator": "Gene3",
+        "regulator2": "Gene7",
+        "target": "Gene2",
+        "rate_law": "AND",
+        "Vf": 0.81,
+        "K1": 0.49,
+        "K2": 0.6,
+        "K3": 0.1,
+        "n1": 5.48,
+        "n2": 7.48
+      },
+      {
+        "regulator": "Gene2",
+        "regulator2": null,
+        "target": "Gene1",
+        "rate_law": "inhibition",
+        "Vf": 0.38,
+        "Ks": 0.27,
+        "n": 0.76
+      },
+      {
+        "regulator": "Gene2",
+        "regulator2": null,
+        "target": "Gene4",
+        "rate_law": "inhibition",
+        "Vf": 0.77,
+        "Ks": 0.29,
+        "n": 7.27
+      },
+      {
+        "regulator": "Gene4",
+        "regulator2": null,
+        "target": "Gene1",
+        "rate_law": "inhibition",
+        "Vf": 0.99,
+        "Ks": 0.15,
+        "n": 7.63
+      },
+      {
+        "regulator": "Gene2",
+        "regulator2": null,
+        "target": "Gene7",
+        "rate_law": "inhibition",
+        "Vf": 0.68,
+        "Ks": 0.3,
+        "n": 1.11
+      }
+    ],
+    "degradation_rates": {
+      "Gene1": 0.22,
+      "Gene2": 0.16,
+      "Gene3": 0.11,
+      "Gene4": 0.98,
+      "Gene7": 0.43
+    },
+    "y0": {
+      "Gene1": 23.93,
+      "Gene2": 16.92,
+      "Gene3": 5.24,
+      "Gene4": 1.15,
+      "Gene7": 21.91
+    },
+    "fitness": {
+      "score": 74.994852,
+      "raw_sse": 6.553305,
+      "network_size": 5,
+      "best_gene": "Gene1",
+      "per_gene_scores": {
+        "Gene0": 432.345206,
+        "Gene1": 6.553305,
+        "Gene2": 296.901367,
+        "Gene3": 400.357928,
+        "Gene4": 440.400217,
+        "Gene5": 392.295645,
+        "Gene6": 332.374074,
+        "Gene7": 343.803763
+      }
+    }
+  }
+}

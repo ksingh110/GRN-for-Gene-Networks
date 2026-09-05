@@ -1,0 +1,150 @@
+{
+  "refinement": 7,
+  "seed": 969905433,
+  "target_pattern": "OSCILLATOR",
+  "excluded_logic_gates": [],
+  "logic_gates": [
+    "AND",
+    "OR",
+    "NOR",
+    "NAND",
+    "XOR",
+    "EQ"
+  ],
+  "converged": true,
+  "generations_used": 84,
+  "elapsed_seconds": 3.7066316670025117,
+  "final_fitness": 74.540255,
+  "raw_sse": 4.954026,
+  "network_size": 8,
+  "best_network": {
+    "id": 62,
+    "genes": [
+      "Gene1",
+      "Gene2",
+      "Gene3",
+      "Gene4",
+      "Gene6",
+      "Gene8",
+      "Gene10"
+    ],
+    "edges": [
+      {
+        "regulator": "Gene6",
+        "regulator2": "Gene3",
+        "target": "Gene10",
+        "rate_law": "EQ",
+        "Vf": 0.54,
+        "K1": 0.89,
+        "K2": 0.21,
+        "K3": 0.01,
+        "n1": 3.54,
+        "n2": 6.45
+      },
+      {
+        "regulator": "Gene4",
+        "regulator2": "Gene10",
+        "target": "Gene3",
+        "rate_law": "NAND",
+        "Vf": 0.69,
+        "K1": 0.11,
+        "K2": 0.43,
+        "K3": 0.83,
+        "n1": 7.56,
+        "n2": 6.54
+      },
+      {
+        "regulator": "Gene2",
+        "regulator2": null,
+        "target": "Gene8",
+        "rate_law": "activation",
+        "Vf": 0.77,
+        "Ks": 0.45,
+        "n": 2.12
+      },
+      {
+        "regulator": "Gene4",
+        "regulator2": null,
+        "target": "Gene2",
+        "rate_law": "activation",
+        "Vf": 0.53,
+        "Ks": 0.45,
+        "n": 7.25
+      },
+      {
+        "regulator": "Gene2",
+        "regulator2": "Gene8",
+        "target": "Gene4",
+        "rate_law": "EQ",
+        "Vf": 0.98,
+        "K1": 0.06,
+        "K2": 0.26,
+        "K3": 0.61,
+        "n1": 7.8,
+        "n2": 7.45
+      },
+      {
+        "regulator": "Gene3",
+        "regulator2": null,
+        "target": "Gene2",
+        "rate_law": "inhibition",
+        "Vf": 0.34,
+        "Ks": 0.1,
+        "n": 4.49
+      },
+      {
+        "regulator": "Gene1",
+        "regulator2": null,
+        "target": "Gene6",
+        "rate_law": "inhibition",
+        "Vf": 0.97,
+        "Ks": 0.23,
+        "n": 5.37
+      },
+      {
+        "regulator": "Gene3",
+        "regulator2": null,
+        "target": "Gene8",
+        "rate_law": "inhibition",
+        "Vf": 0.61,
+        "Ks": 0.7,
+        "n": 6.72
+      }
+    ],
+    "degradation_rates": {
+      "Gene1": 0.17,
+      "Gene2": 0.25,
+      "Gene3": 0.35,
+      "Gene4": 0.62,
+      "Gene6": 0.33,
+      "Gene8": 0.29,
+      "Gene10": 0.63
+    },
+    "y0": {
+      "Gene1": 7.53,
+      "Gene2": 8.05,
+      "Gene3": 6.88,
+      "Gene4": 8.76,
+      "Gene6": 12.22,
+      "Gene8": 13.95,
+      "Gene10": 6.56
+    },
+    "fitness": {
+      "score": 74.540255,
+      "raw_sse": 4.954026,
+      "network_size": 8,
+      "best_gene": "Gene10",
+      "per_gene_scores": {
+        "Gene0": 449.248739,
+        "Gene1": 439.612811,
+        "Gene2": 433.374432,
+        "Gene3": 400.335442,
+        "Gene4": 442.929608,
+        "Gene5": 458.687001,
+        "Gene6": 242.092626,
+        "Gene8": 410.039287,
+        "Gene10": 4.954026
+      }
+    }
+  }
+}

@@ -1,0 +1,25 @@
+model network  Gene0 = 4.21;  Gene1 = 6.74;  Gene2 = 5.95;  Gene3 = 16.04;  Gene4 = 1.31;  Gene5 = 19.79;  Gene6 = 10.53;  Gene7 = 11.73;  Gene8 = 17.72;  Gene9 = 3.89;  Gene10 = 3.78;  Gene11 = 8.44;  J_Gene0_synth: -> Gene0; 1.0*(1)/(1 + 0.13*Gene5^7.81 + 0.4*Gene11^2.15 + 0.61*Gene5^7.81*Gene11^2.15);
+  J_Gene0_deg: Gene0 -> ; 0.17*Gene0;
+  J_Gene1_synth: -> Gene1; 0.96*(1 + 0.61*Gene2^2.76*Gene0^6.67)/(1 + 0.61*Gene2^2.76 + 0.85*Gene0^6.67 + 0.33*Gene2^2.76*Gene0^6.67);
+  J_Gene1_deg: Gene1 -> ; 0.58*Gene1;
+  J_Gene2_synth: -> Gene2; 0.01*(0.71*0.75*Gene8^0.61*Gene3^2.09)/(1 + 0.71*Gene8^0.61 + 0.75*Gene3^2.09 + 0.71*0.75*Gene8^0.61*Gene3^2.09);
+  J_Gene2_deg: Gene2 -> ; 0.56*Gene2;
+  J_Gene3_synth: -> Gene3; 0.93*(0.01*0.64*Gene5^0.1*Gene9^7.73)/(1 + 0.01*Gene5^0.1 + 0.64*Gene9^7.73 + 0.01*0.64*Gene5^0.1*Gene9^7.73);
+  J_Gene3_deg: Gene3 -> ; 0.36*Gene3;
+  J_Gene4_synth: -> Gene4; 0.11*(0.99*Gene10^1.58 + 0.43*Gene5^3.98)/(1 + 0.99*Gene10^1.58 + 0.43*Gene5^3.98 + 0.19*Gene10^1.58*Gene5^3.98);
+  J_Gene4_deg: Gene4 -> ; 0.19*Gene4;
+  J_Gene5_synth: -> Gene5; 0.81*(1 + 0.62*Gene8^5.18*Gene6^7.38)/(1 + 0.62*Gene8^5.18 + 0.89*Gene6^7.38 + 0.03*Gene8^5.18*Gene6^7.38);
+  J_Gene5_deg: Gene5 -> ; 0.28*Gene5;
+  J_Gene6_synth: -> Gene6; (0.16)/(0.67 + Gene10^0.42) + (0.89)/(0.6 + Gene0^2.3);
+  J_Gene6_deg: Gene6 -> ; 0.9*Gene6;
+  J_Gene7_synth: -> Gene7; (0.78)/(0.07 + Gene1^2.31) + (0.11)/(0.35 + Gene11^0.99);
+  J_Gene7_deg: Gene7 -> ; 0.46*Gene7;
+  J_Gene8_synth: -> Gene8; 0.1*(1 + 0.69*Gene5^2.71 + 0.31*Gene3^7.2)/(1 + 0.69*Gene5^2.71 + 0.31*Gene3^7.2 + 0.54*Gene5^2.71*Gene3^7.2);
+  J_Gene8_deg: Gene8 -> ; 0.62*Gene8;
+  J_Gene9_synth: -> Gene9; (0.74)/(0.03 + Gene11^7.29) + (1.0*Gene5^7.88)/(0.61 + Gene5^7.88);
+  J_Gene9_deg: Gene9 -> ; 0.78*Gene9;
+  J_Gene10_synth: -> Gene10; (0.8)/(0.02 + Gene2^4.43) + (0.09*Gene0^2.34)/(0.47 + Gene0^2.34);
+  J_Gene10_deg: Gene10 -> ; 0.38*Gene10;
+  J_Gene11_synth: -> Gene11; 0.98*(1)/(1 + 0.56*Gene3^5.53 + 0.38*Gene1^7.86 + 0.43*Gene3^5.53*Gene1^7.86);
+  J_Gene11_deg: Gene11 -> ; 0.69*Gene11;
+end

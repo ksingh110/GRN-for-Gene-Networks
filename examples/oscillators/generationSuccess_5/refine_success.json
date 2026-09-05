@@ -1,0 +1,118 @@
+{
+  "refinement": 4,
+  "seed": 2476533759,
+  "target_pattern": "OSCILLATOR",
+  "excluded_logic_gates": [],
+  "logic_gates": [
+    "AND",
+    "OR",
+    "NOR",
+    "NAND",
+    "XOR",
+    "EQ"
+  ],
+  "converged": true,
+  "generations_used": 1,
+  "elapsed_seconds": 0.0914765420020558,
+  "final_fitness": 68.941962,
+  "raw_sse": 6.156349,
+  "network_size": 7,
+  "best_network": {
+    "id": 22,
+    "genes": [
+      "Gene0",
+      "Gene1",
+      "Gene2",
+      "Gene3"
+    ],
+    "edges": [
+      {
+        "regulator": "Gene0",
+        "regulator2": null,
+        "target": "Gene1",
+        "rate_law": "inhibition",
+        "Vf": 0.55,
+        "Ks": 0.1,
+        "n": 7.78
+      },
+      {
+        "regulator": "Gene1",
+        "regulator2": null,
+        "target": "Gene3",
+        "rate_law": "inhibition",
+        "Vf": 0.84,
+        "Ks": 0.03,
+        "n": 7.72
+      },
+      {
+        "regulator": "Gene2",
+        "regulator2": null,
+        "target": "Gene0",
+        "rate_law": "activation",
+        "Vf": 0.72,
+        "Ks": 0.41,
+        "n": 7.88
+      },
+      {
+        "regulator": "Gene1",
+        "regulator2": null,
+        "target": "Gene0",
+        "rate_law": "activation",
+        "Vf": 0.46,
+        "Ks": 0.72,
+        "n": 3.33
+      },
+      {
+        "regulator": "Gene3",
+        "regulator2": null,
+        "target": "Gene2",
+        "rate_law": "inhibition",
+        "Vf": 0.88,
+        "Ks": 0.07,
+        "n": 4.15
+      },
+      {
+        "regulator": "Gene3",
+        "regulator2": null,
+        "target": "Gene2",
+        "rate_law": "inhibition",
+        "Vf": 0.46,
+        "Ks": 0.98,
+        "n": 5.26
+      },
+      {
+        "regulator": "Gene2",
+        "regulator2": null,
+        "target": "Gene3",
+        "rate_law": "activation",
+        "Vf": 0.31,
+        "Ks": 0.99,
+        "n": 4.78
+      }
+    ],
+    "degradation_rates": {
+      "Gene0": 0.8,
+      "Gene1": 1.0,
+      "Gene2": 0.79,
+      "Gene3": 0.55
+    },
+    "y0": {
+      "Gene0": 9.72,
+      "Gene1": 7.87,
+      "Gene2": 22.71,
+      "Gene3": 1.52
+    },
+    "fitness": {
+      "score": 68.941962,
+      "raw_sse": 6.156349,
+      "network_size": 7,
+      "best_gene": "Gene3",
+      "per_gene_scores": {
+        "Gene0": 436.396803,
+        "Gene1": 426.503908,
+        "Gene2": 471.56209,
+        "Gene3": 6.156349
+      }
+    }
+  }
+}

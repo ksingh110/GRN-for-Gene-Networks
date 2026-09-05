@@ -11,5 +11,3 @@ venv/
 .idea/
 
 results_cli/
-generations/
-generationRefine/
