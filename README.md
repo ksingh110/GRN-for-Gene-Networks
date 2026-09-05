@@ -71,5 +71,3 @@ Each CLI invocation creates a timestamped directory under `results_cli/`. Succes
 
 - `examples/results/` contains compact, human-inspectable output examples.
 - `archive/legacy_runs/` contains the original historical run archives retained for provenance.
-
-For a publication release, create an immutable tagged version and archive that tag with the manuscript's exact configuration, random seed, and environment details.
