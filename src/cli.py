@@ -925,17 +925,12 @@ def run_evolution_trial(
 
     print(f"Seed: {random_seed}")
 
-    compute_generation_initial(
+    data = compute_generation_initial(
         1,
         target_pattern,
         mp_pool=pool,
         logic_gates=cfg["logic_gates"],
     )
-
-    with open(
-        "generations/generation_1.json"
-    ) as file:
-        data = json.load(file)
 
     best_fitness = (
         data["networks"][0]["fitness"]["score"]
@@ -1389,15 +1384,6 @@ def main():
     cfg["results_dir"] = os.path.join(cfg["results_dir"], run_timestamp)
     os.makedirs(cfg["results_dir"], exist_ok=True)
 
-    os.makedirs(
-        "generations",
-        exist_ok=True,
-    )
-
-    os.makedirs(
-        "generationRefine",
-        exist_ok=True,
-    )
 
     target_pattern = get_target_pattern(
         cfg["target_pattern"]
